@@ -1,0 +1,110 @@
+npx create-vite@latest frontend - creating
+
+Windows Installer (.msi)  - Nodejs installation completed
+
+Perfect. Now you already built:
+
+React frontend
+State management using useState
+Dynamic task rendering
+Interactive UI
+
+npm install react-router-dom
+
+productivity-platform/
+  src/ (frontend React)
+  backend/ (NEW Node.js server)
+
+You are ONLY using:
+
+✔ VS Code
+✔ Terminal inside VS Code
+✔ Node.js commands
+
+Good — this means your backend setup is correct ✔
+
+You have successfully installed:
+
+express
+cors
+pg
+dotenv
+
+So now you are at the REAL coding step.
+
+PostgreSQL
+password:Admin
+
+PostgreSQL database creation
+CREATE TABLE productivity_logs (
+    id SERIAL PRIMARY KEY,
+    work_date DATE NOT NULL,
+    total_seconds INTEGER NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
+
+Server side hosting:
+sudo apt update 
+sudo apt upgrade -y
+
+Install Node.Js
+curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -
+sudo apt install -y nodejs
+
+checking node available or not:
+node -v
+npm -v
+
+Install Git:
+sudo apt install git -y
+
+check git:
+git --version
+
+Install PM2 (Process Manager)
+sudo npm install -g pm2
+pm2 -v
+
+Install Nginx (becoz Node.js, react and devops supports well)
+sudo apt install nginx -y
+sudo systemctl start nginx
+sudo systemctl enable nginx
+
+Install PostgreSQL
+sudo apt update
+sudo apt install postgresql postgresql-contrib -y
+
+Start PostgreSQL:
+sudo systemctl start postgresql
+sudo systemctl enable PostgreSQL
+sudo systemctl status PostgreSQL
+
+login to PostgreSQL:
+sudo -u postgres psql
+
+Create Database:
+CREATE DATABASE productivity_tracker;
+CREATE USER trackeruser WITH PASSWORD 'admin';
+GRANT ALL PRIVILEGES ON DATABASE productivity_tracker TO trackeruser;
+\q (for exiting)
+
+After exiting, we will connect your Node.js backend to PostgreSQL using:
+
+database: productivity_tracker
+username: trackeruser
+password: admin
+
+installing git on Vscode:
+winget install --id Git.Git -e --source winget
+
+git init
+
+creating file:
+New-Item .gitignore -ItemType File
+
+Asking git to ignore "node modules/.env which has password/Log files)
+Add-Content .gitignore "node_modules/
+.env
+*.log"
