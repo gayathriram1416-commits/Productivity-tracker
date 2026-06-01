@@ -54,8 +54,8 @@ app.get("/history", async (req, res) => {
       SELECT
         id,
         work_date,
-        start_time AT TIME ZONE 'UTC' AT TIME ZONE 'Asia/Kolkata' AS start_time,
-        end_time AT TIME ZONE 'UTC' AT TIME ZONE 'Asia/Kolkata' AS end_time,
+        start_time,
+        end_time,
         total_seconds
       FROM productivity_logs
       ORDER BY work_date DESC, start_time DESC
