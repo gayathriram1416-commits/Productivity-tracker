@@ -108,3 +108,120 @@ Asking git to ignore "node modules/.env which has password/Log files)
 Add-Content .gitignore "node_modules/
 .env
 *.log"
+
+Adding Everything:
+git add .
+
+git commit -m "Initial commit - productivity tracker app"
+
+git remote add origin https://github.com/gayathriram1416-commits/Productivity-tracker.git
+
+git branch -M main
+
+git push -u origin main
+
+a git hub sign in page will pop up after the above command and need to authorize with OTP 
+
+Connect EC2 with Git:
+git clone https://github.com/gayathriram1416-commits/Productivity-tracker.git
+
+cd Productivity-tracker
+
+Backend dependencies:
+cd backend && npm install
+
+Frontend dependencies:
+cd ../frontend && npm install
+
+✅ Backend - 83 packages installed, 0 vulnerabilities
+✅ Frontend - 135 packages installed, 0 vulnerabilities
+
+Now you need to create the .env file for your backend (database credentials). Run:
+cd /home/ubuntu/Productivity-tracker/backend
+
+Create .env file for database:
+nano .env
+
+DB_HOST=localhost
+DB_USER=trackeruser
+DB_PASSWORD=admin
+DB_NAME=productivity_tracker
+DB_PORT=5432
+PORT=5000
+
+now run backend server on ec2 terminal:
+node server.js
+
+Now Open another Ec2 tab same server for frontend:
+cd /home/ubuntu/Productivity-tracker/frontend
+npm run build
+
+Install tailwind packages:
+npm install @tailwindcss/vite
+
+
+✅ What We've Done So Far
+1. Local Machine (Windows)
+
+Installed Git
+Initialized git repo (git init)
+Created .gitignore (to exclude node_modules, .env)
+Staged and committed all 28 files
+Pushed everything to GitHub
+
+
+2. GitHub
+
+Created repo "Productivity-tracker"
+Successfully pushed frontend/, backend/ folders ✅
+
+
+3. EC2 Server
+
+Cloned the repo from GitHub (git clone)
+Installed backend dependencies (npm install in backend)
+Installed frontend dependencies (npm install in frontend)
+Created .env file with PostgreSQL credentials
+Started backend server → running on port 5000 ✅
+Built frontend → dist/ folder created ✅
+
+sudo nano /etc/nginx/sites-available/productivity
+
+Inside the text editor
+server {
+    listen 80;
+    server_name _;
+
+    location / {
+        root /home/ubuntu/Productivity-tracker/frontend/dist;
+        index index.html;
+        try_files $uri $uri/ /index.html;
+    }
+
+    location /api/ {
+        proxy_pass http://localhost:5000/;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
+}
+
+
+sudo ln -s /etc/nginx/sites-available/productivity /etc/nginx/sites-enabled/
+
+Testing Nginx configuration file without restarting it:
+sudo nginx -t
+
+sudo systemctl daemon-reload
+sudo systemctl restart nginx
+sudo systemctl status nginx
+
+Now let's keep your backend running permanently using PM2. Run in Tab 1 (where backend is running), press Ctrl+C to stop it first, then:
+Install PM2:
+npm install -g pm2
+
+cd /home/ubuntu/Productivity-tracker/backend
+pm2 start server.js --name "productivity-backend"
+
+pm2 save
+pm2 startup

@@ -71,7 +71,7 @@ export default function App() {
 
   const fetchHistory = async () => {
     try {
-      const res = await fetch("http://localhost:5000/history");
+      const res = await fetch("/api/history");
 
       const data = await res.json();
 
@@ -142,7 +142,7 @@ export default function App() {
     setSavedTotalSeconds(updatedTotal);
 
     try {
-      await fetch("http://localhost:5000/save", {
+      await fetch("/api/save", {
         method: "POST",
 
         headers: {
@@ -161,7 +161,7 @@ export default function App() {
       });
 
       // REFRESH HISTORY ONLY
-      const res = await fetch("http://localhost:5000/history");
+      const res = await fetch("/api/history");
 
       const data = await res.json();
 
