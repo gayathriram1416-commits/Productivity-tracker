@@ -3,7 +3,7 @@
 A full-stack productivity tracking web application to log work sessions, track clock-in/clock-out times, and view daily productivity reports deployed on AWS EC2 using Docker containers.
 
 ## Live Demo
-Deployed on AWS EC2: `http://13.232.87.216:8080`
+Deployed on AWS EC2: http://13.232.87.216:8080
 
 ## Tech Stack
 | Layer | Technology |
@@ -29,5 +29,5 @@ Deployed on AWS EC2: `http://13.232.87.216:8080`
 - Multi-user support
 
 ## Author
-**Gayathri R** — DevOps Engineer
+**Gayathri R** DevOps Engineer
 gayathriram1416@gmail.com
