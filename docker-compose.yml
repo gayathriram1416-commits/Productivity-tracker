@@ -1,0 +1,23 @@
+services:
+
+  backend:
+    build: ./backend
+    container_name: backend-app
+    restart: always
+    ports:
+      - "5000:5000"
+    environment:
+      DB_HOST: 172.31.42.142
+      DB_USER: trackeruser
+      DB_PASSWORD: admin
+      DB_NAME: productivity_tracker
+      DB_PORT: 5432
+
+  frontend:
+    build: ./frontend
+    container_name: frontend-app
+    restart: always
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend

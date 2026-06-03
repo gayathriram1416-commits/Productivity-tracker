@@ -1,4 +1,4 @@
-﻿const express = require("express");
+const express = require("express");
 const cors = require("cors");
 const { Pool } = require("pg");
 require("dotenv").config();
@@ -15,6 +15,14 @@ const pool = new Pool({
   port: process.env.DB_PORT,
 });
 
+pool.query(`CREATE TABLE IF NOT EXISTS productivity_logs (
+  id SERIAL PRIMARY KEY,
+  work_date DATE,
+  start_time TIMESTAMP,
+  end_time TIMESTAMP,
+  total_seconds INTEGER
+)`).then(() => console.log("Table ready")).catch(console.error);
+
 pool.connect((err) => {
   if (err) {
     console.error("DB CONNECTION FAILED:", err.message);
@@ -25,21 +33,17 @@ pool.connect((err) => {
 
 app.get("/", (req, res) => res.send("Backend working"));
 
-app.post("/save", async (req, res) => {
+app.post("/api/save", async (req, res) => {
   try {
     const { totalSeconds, startTime, endTime } = req.body;
     console.log("SAVE CALLED:", totalSeconds, startTime, endTime);
-
-    // Use IST date as work_date
     const istOffset = 5.5 * 60 * 60000;
     const work_date = new Date(new Date(endTime).getTime() + istOffset)
       .toISOString().split("T")[0];
-
     await pool.query(
       "INSERT INTO productivity_logs (work_date, start_time, end_time, total_seconds) VALUES ($1, $2, $3, $4)",
       [work_date, new Date(startTime), new Date(endTime), totalSeconds]
     );
-
     console.log("SAVED OK");
     res.json({ success: true });
   } catch (error) {
@@ -48,15 +52,10 @@ app.post("/save", async (req, res) => {
   }
 });
 
-app.get("/history", async (req, res) => {
+app.get("/api/history", async (req, res) => {
   try {
     const result = await pool.query(`
-      SELECT
-        id,
-        work_date,
-        start_time,
-        end_time,
-        total_seconds
+      SELECT id, work_date, start_time, end_time, total_seconds
       FROM productivity_logs
       ORDER BY work_date DESC, start_time DESC
     `);
