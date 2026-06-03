@@ -22,5 +22,12 @@ A full-stack productivity tracking web application to log work sessions, track c
 - Fully containerized with Docker
 - Deployed on AWS EC2
 
+## Future Enhancements
+- Kubernetes migration for container orchestration
+- CI/CD pipeline using GitHub Actions for automated build and deploy
+- End of day automated notification showing total productive hours
+- Multi-user support
+
 ## Author
 **Gayathri R** — DevOps Engineer
+gayathriram1416@gmail.com
