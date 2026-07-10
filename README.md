@@ -19,7 +19,6 @@ Deployed the application inside Kubernetes cluster
 
 **Future Enhancements**
 CI/CD pipeline using GitHub Actions for automated build and deploy
-Kubernetes migration for container orchestration
 End of day automated notification showing total productive hours
 Multi-user support
 
