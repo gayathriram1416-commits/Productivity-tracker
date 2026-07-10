@@ -15,6 +15,7 @@ Persistent data storage with PostgreSQL
 Fully containerized with Docker
 Deployed on AWS EC2 with Elastic IP
 Docker images stored in Amazon ECR
+Deployed the application inside Kubernetes cluster
 
 **Future Enhancements**
 CI/CD pipeline using GitHub Actions for automated build and deploy
