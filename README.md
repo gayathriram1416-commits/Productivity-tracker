@@ -2,7 +2,7 @@
 A full-stack productivity tracking web application to log work sessions, track clock-in/clock-out times, and view daily productivity reports deployed on AWS EC2 using Docker containers.
 Live Demo
 
-**Deployed on AWS EC2**: http://65.1.93.110/
+**Deployed on AWS EC2**: https://13-203-12-58.sslip.io/
 
 **Tech Stack**
 LayerTechnologyFrontendReact.js, Vite, Tailwind CSS, NginxBackendNode.js, Express.jsDatabasePostgreSQLContainersDockerCloudAWS EC2, Amazon ECR
