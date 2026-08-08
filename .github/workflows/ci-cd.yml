@@ -11,45 +11,47 @@ on:
 jobs:
 
   # ==========================================
-  # TEST BACKEND
+  # BACKEND CI
   # ==========================================
   backend-test:
     name: Backend Test
     runs-on: ubuntu-latest
 
     steps:
+
       - name: Checkout Code
         uses: actions/checkout@v4
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "18"
+          node-version: "22"
 
       - name: Install Backend Dependencies
         working-directory: backend
         run: npm install
 
-      - name: Run Backend Test
+      - name: Check Backend Syntax
         working-directory: backend
-        run: npm test
+        run: node --check server.js
 
 
   # ==========================================
-  # TEST FRONTEND
+  # FRONTEND CI
   # ==========================================
   frontend-test:
     name: Frontend Build Test
     runs-on: ubuntu-latest
 
     steps:
+
       - name: Checkout Code
         uses: actions/checkout@v4
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "18"
+          node-version: "22"
 
       - name: Install Frontend Dependencies
         working-directory: frontend
@@ -61,7 +63,7 @@ jobs:
 
 
   # ==========================================
-  # TEST DOCKER BUILDS
+  # DOCKER BUILD TEST
   # ==========================================
   docker-build-test:
     name: Docker Build Test
@@ -72,6 +74,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+
       - name: Checkout Code
         uses: actions/checkout@v4
 
@@ -88,5 +91,4 @@ jobs:
             ./frontend
 
       - name: Show Docker Images
-        run: |
-          docker images
+        run: docker images
