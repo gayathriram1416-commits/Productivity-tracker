@@ -1,79 +1,92 @@
-name: Productivity Tracker CI/CD
+name: Productivity Tracker - CI Test
 
 on:
   push:
-    branches: [ "main" ]
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
-  test:
+
+  # ==========================================
+  # TEST BACKEND
+  # ==========================================
+  backend-test:
+    name: Backend Test
     runs-on: ubuntu-latest
-    services:
-      postgres:
-        image: postgres:15
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: password
-          POSTGRES_DB: productivity_tracker
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-
-    steps:
-      - name: Checkout Repository Code
-        uses: actions/checkout@v4
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '18'
-
-      - name: Install & Run Tests
-        run: |
-          npm install
-          npm test --if-present
-
-  deploy:
-    needs: test
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
 
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ap-south-1
+          node-version: "18"
 
-      - name: Log in to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v2
+      - name: Install Backend Dependencies
+        working-directory: backend
+        run: npm install
 
-      - name: Build & Push Docker Image
-        env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: productivity-tracker
-          IMAGE_TAG: latest
+      - name: Run Backend Test
+        working-directory: backend
+        run: npm test
+
+
+  # ==========================================
+  # TEST FRONTEND
+  # ==========================================
+  frontend-test:
+    name: Frontend Build Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+
+      - name: Install Frontend Dependencies
+        working-directory: frontend
+        run: npm install
+
+      - name: Build Frontend
+        working-directory: frontend
+        run: npm run build
+
+
+  # ==========================================
+  # TEST DOCKER BUILDS
+  # ==========================================
+  docker-build-test:
+    name: Docker Build Test
+    needs:
+      - backend-test
+      - frontend-test
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Build Backend Docker Image
         run: |
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          docker build \
+            -t productivity-tracker-backend:test \
+            ./backend
 
-      - name: Deploy to AWS EC2 via SSH
-        uses: appleboy/ssh-action@v1.0.0
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ubuntu
-          key: ${{ secrets.EC2_SSH_KEY }}
-          script: |
-            aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin ${{ steps.login-ecr.outputs.registry }}
-            docker pull ${{ steps.login-ecr.outputs.registry }}/productivity-tracker:latest
-            docker stop productivity-tracker || true
-            docker rm productivity-tracker || true
-            docker run -d --name productivity-tracker -p 80:80 ${{ steps.login-ecr.outputs.registry }}/productivity-tracker:latest
+      - name: Build Frontend Docker Image
+        run: |
+          docker build \
+            -t productivity-tracker-frontend:test \
+            ./frontend
+
+      - name: Show Docker Images
+        run: |
+          docker images
